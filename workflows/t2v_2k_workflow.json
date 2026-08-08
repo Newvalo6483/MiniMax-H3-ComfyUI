@@ -1,0 +1,113 @@
+{
+    "last_node_id": 7,
+    "last_link_id": 8,
+    "nodes": [
+        {
+            "id": 1,
+            "type": "H3ModelLoader",
+            "pos": [100, 100],
+            "outputs": [
+                {"name": "model", "type": "H3_MODEL", "links": [1]},
+                {"name": "vae", "type": "H3_VAE", "links": [4]},
+                {"name": "processor", "type": "H3_PROCESSOR", "links": null}
+            ],
+            "widgets_values": ["MiniMaxAI/MiniMax-H3", "fl2va", "bf16", "cuda", "full", false]
+        },
+        {
+            "id": 2,
+            "type": "H3ContextIR",
+            "pos": [100, 350],
+            "outputs": [
+                {"name": "enhanced_prompt", "type": "STRING", "links": [2]},
+                {"name": "raw_response", "type": "STRING", "links": null}
+            ],
+            "widgets_values": [
+                "A starship captain watches an enemy fleet jump to hyperspace through the observation window of the bridge. The fleet's engines glow blue as they charge, then vanish in a blinding flash.",
+                10,
+                "16:9",
+                "",
+                "global"
+            ]
+        },
+        {
+            "id": 3,
+            "type": "H3TextToVideo",
+            "pos": [500, 100],
+            "inputs": [
+                {"name": "model", "type": "H3_MODEL", "link": 1},
+                {"name": "vae", "type": "H3_VAE", "link": null},
+                {"name": "processor", "type": "H3_PROCESSOR", "link": null}
+            ],
+            "outputs": [
+                {"name": "video_latent", "type": "H3_LATENT", "links": [3]},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "links": [7]}
+            ],
+            "widgets_values": ["", 10.0, "16:9", 5.0, 50, 42]
+        },
+        {
+            "id": 4,
+            "type": "H3VAEDecode",
+            "pos": [980, 100],
+            "inputs": [
+                {"name": "vae", "type": "H3_VAE", "link": 4},
+                {"name": "video_latent", "type": "H3_LATENT", "link": 3},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "link": 7}
+            ],
+            "outputs": [
+                {"name": "frames", "type": "IMAGE", "links": [5]},
+                {"name": "audio", "type": "AUDIO", "links": [8]},
+                {"name": "metadata", "type": "METADATA", "links": null}
+            ],
+            "widgets_values": [true, 24, 32000]
+        },
+        {
+            "id": 5,
+            "type": "H3Regenerate2K",
+            "pos": [1360, 100],
+            "size": [350, 250],
+            "inputs": [
+                {"name": "video_frames", "type": "IMAGE", "link": 5},
+                {"name": "audio", "type": "AUDIO", "link": 8}
+            ],
+            "outputs": [
+                {"name": "upscaled_frames", "type": "IMAGE", "links": [6]},
+                {"name": "upscaled_audio", "type": "AUDIO", "links": [9]},
+                {"name": "status", "type": "STRING", "links": null}
+            ],
+            "widgets_values": [
+                "A starship captain watches an enemy fleet jump to hyperspace through the observation window of the bridge.",
+                10,
+                "16:9",
+                "",
+                "global"
+            ]
+        },
+        {
+            "id": 6,
+            "type": "SaveAnimatedWEBP",
+            "pos": [1780, 100],
+            "inputs": [{"name": "images", "type": "IMAGE", "link": 6}],
+            "widgets_values": ["minimax_h3_2k_output"]
+        },
+        {
+            "id": 7,
+            "type": "SaveAudio",
+            "pos": [1780, 250],
+            "inputs": [{"name": "audio", "type": "AUDIO", "link": 9}],
+            "widgets_values": ["minimax_h3_2k_audio"]
+        }
+    ],
+    "links": [
+        [1, 1, 0, 3, 0, "H3_MODEL"],
+        [2, 2, 0, 3, 0, "STRING"],
+        [3, 3, 0, 4, 1, "H3_LATENT"],
+        [4, 1, 1, 4, 0, "H3_VAE"],
+        [5, 4, 0, 5, 0, "IMAGE"],
+        [6, 5, 0, 6, 0, "IMAGE"],
+        [7, 3, 1, 4, 2, "AUDIO_LATENT"],
+        [8, 4, 1, 5, 1, "AUDIO"],
+        [9, 5, 1, 7, 0, "AUDIO"]
+    ],
+    "notes": "Full 2K workflow: Context-IR → T2V → VAE Decode → Regenerate 2K API",
+    "version": 0.4
+}

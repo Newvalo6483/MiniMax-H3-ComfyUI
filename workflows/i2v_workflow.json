@@ -1,0 +1,106 @@
+{
+    "last_node_id": 7,
+    "last_link_id": 8,
+    "nodes": [
+        {
+            "id": 1,
+            "type": "H3ModelLoader",
+            "pos": [100, 100],
+            "size": [320, 200],
+            "flags": {},
+            "order": 0,
+            "mode": 0,
+            "outputs": [
+                {"name": "model", "type": "H3_MODEL", "links": [1]},
+                {"name": "vae", "type": "H3_VAE", "links": [5]},
+                {"name": "processor", "type": "H3_PROCESSOR", "links": null}
+            ],
+            "widgets_values": ["MiniMaxAI/MiniMax-H3", "fl2va", "bf16", "cuda", "full", false]
+        },
+        {
+            "id": 2,
+            "type": "LoadImage",
+            "pos": [100, 350],
+            "size": [300, 100],
+            "flags": {},
+            "order": 1,
+            "mode": 0,
+            "outputs": [
+                {"name": "IMAGE", "type": "IMAGE", "links": [2]},
+                {"name": "MASK", "type": "MASK", "links": null}
+            ],
+            "widgets_values": ["first_frame.png"]
+        },
+        {
+            "id": 3,
+            "type": "H3ImageToVideo",
+            "pos": [500, 100],
+            "size": [400, 300],
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "inputs": [
+                {"name": "model", "type": "H3_MODEL", "link": 1},
+                {"name": "vae", "type": "H3_VAE", "link": null},
+                {"name": "processor", "type": "H3_PROCESSOR", "link": null},
+                {"name": "first_frame", "type": "IMAGE", "link": 2}
+            ],
+            "outputs": [
+                {"name": "video_latent", "type": "H3_LATENT", "links": [3]},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "links": [6]}
+            ],
+            "widgets_values": [
+                "The camera slowly zooms in on the subject. Gentle wind moves the hair. The scene transitions from static to alive with subtle motion. overall_soundscape: Soft ambient sounds, distant birdsong, gentle breeze. non_diegetic_music: Warm piano melody.",
+                8.0,
+                "auto",
+                5.0,
+                50,
+                42
+            ]
+        },
+        {
+            "id": 4,
+            "type": "H3VAEDecode",
+            "pos": [980, 100],
+            "size": [300, 200],
+            "flags": {},
+            "order": 3,
+            "mode": 0,
+            "inputs": [
+                {"name": "vae", "type": "H3_VAE", "link": 5},
+                {"name": "video_latent", "type": "H3_LATENT", "link": 3},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "link": 6}
+            ],
+            "outputs": [
+                {"name": "frames", "type": "IMAGE", "links": [4]},
+                {"name": "audio", "type": "AUDIO", "links": [7]},
+                {"name": "metadata", "type": "METADATA", "links": null}
+            ],
+            "widgets_values": [true, 24, 32000]
+        },
+        {
+            "id": 5,
+            "type": "SaveAnimatedWEBP",
+            "pos": [1360, 100],
+            "inputs": [{"name": "images", "type": "IMAGE", "link": 4}],
+            "widgets_values": ["minimax_h3_i2v_output"]
+        },
+        {
+            "id": 6,
+            "type": "SaveAudio",
+            "pos": [1360, 250],
+            "inputs": [{"name": "audio", "type": "AUDIO", "link": 7}],
+            "widgets_values": ["minimax_h3_i2v_audio"]
+        }
+    ],
+    "links": [
+        [1, 1, 0, 3, 0, "H3_MODEL"],
+        [2, 2, 0, 3, 3, "IMAGE"],
+        [3, 3, 0, 4, 1, "H3_LATENT"],
+        [4, 4, 0, 5, 0, "IMAGE"],
+        [5, 1, 1, 4, 0, "H3_VAE"],
+        [6, 3, 1, 4, 2, "AUDIO_LATENT"],
+        [7, 4, 1, 6, 0, "AUDIO"]
+    ],
+    "version": 0.4
+}

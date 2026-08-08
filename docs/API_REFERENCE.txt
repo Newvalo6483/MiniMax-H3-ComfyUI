@@ -1,0 +1,148 @@
+MiniMax H3 ComfyUI - API Reference
+====================================
+Covers H3-Context-IR API, H3-Regenerate-2K API, model loading,
+and VAE decoding for local + API hybrid workflows.
+
+API ENDPOINTS
+
+Global: https://api.minimax.io
+CN: https://api.minimaxi.com
+
+All API calls require authentication:
+  Header: Authorization: Bearer YOUR_API_KEY
+  Get key from: platform.minimax.io (Global) or platform.minimaxi.com (CN)
+
+1. H3-Context-IR API
+   Endpoint: POST /video-generation-v2-h3-context-ir
+
+   Request:
+   {
+     "model": "MiniMax-H3",
+     "prompt": "Your raw text prompt",
+     "duration": 10,
+     "ratio": "16:9",
+     "image": "data:image/png;base64,..." (optional)
+   }
+
+   Response:
+   {
+     "task": {
+       "id": "task_id",
+       "model": "MiniMax-H3",
+       "status": "succeeded",
+       "content": {
+         "prompt": "enhanced structured prompt with integrated_multimodal_description..."
+       },
+       "duration": 10,
+       "ratio": "16:9",
+       "task_type": "h3_context_ir",
+       "modality": "text",
+       "usage": {
+         "total_tokens": 8565,
+         "prompt_tokens": 5650,
+         "completion_tokens": 2915
+       }
+     }
+   }
+
+2. H3-Regenerate-2K API
+   Endpoint: POST /video-generation-v2-regeneration
+
+   Request:
+   {
+     "model": "MiniMax-H3",
+     "prompt": "Original or enhanced prompt",
+     "duration": 10,
+     "ratio": "16:9",
+     "base_video": "data:video/mp4;base64,...",
+     "target_resolution": "2K"
+   }
+
+   Response:
+   {
+     "task": {
+       "id": "task_id",
+       "status": "succeeded",
+       "content": {
+         "video_url": "https://..."
+       }
+     }
+   }
+
+3. Create H3 Video (Full API)
+   Endpoint: POST /video-generation-v2-create
+
+   Direct generation through the MiniMax platform API without local
+   deployment. Uses the full H3 system including Context-IR and
+   Regenerate-2K automatically.
+
+COMFYUI NODE INPUTS/OUTPUTS
+
+H3ModelLoader:
+  Inputs:
+    model_path (STRING): Path to MiniMax-H3 directory
+    variant (ENUM): fl2va | ref2va
+    precision (ENUM): bf16 | fp16 | fp32
+    device (ENUM): cuda | cpu
+    offload (ENUM): none | model | full
+    use_int8_vae (BOOLEAN): Use int8_convrot VAE
+  Outputs:
+    model (H3_MODEL): H3-Omni-Transformer
+    vae (H3_VAE): {visual, audio} VAE dict
+    processor (H3_PROCESSOR): H3 processor
+
+H3TextToVideo:
+  Inputs:
+    model (H3_MODEL), vae (H3_VAE), processor (H3_PROCESSOR)
+    prompt (STRING, multiline)
+    duration (FLOAT): 4.0-15.0 seconds
+    aspect_ratio (ENUM): 21:9, 16:9, 4:3, 1:1, 3:4, 9:16
+    guidance_scale (FLOAT): 1.0-20.0
+    num_inference_steps (INT): 10-200
+    seed (INT)
+  Outputs:
+    video_latent (H3_LATENT), audio_latent (AUDIO_LATENT)
+
+H3ImageToVideo:
+  Same as H3TextToVideo plus:
+    first_frame (IMAGE, optional)
+    last_frame (IMAGE, optional)
+    aspect_ratio includes "auto" option
+
+H3ReferenceToVideo:
+  Same as H3TextToVideo plus:
+    ref_images (IMAGE, optional): up to 9
+    ref_videos (VIDEO, optional): up to 3
+    ref_audio (AUDIO, optional): up to 3
+
+H3VAEDecode:
+  Inputs:
+    vae (H3_VAE)
+    video_latent (H3_LATENT)
+    audio_latent (AUDIO_LATENT, optional)
+    decode_audio (BOOLEAN)
+    output_fps (INT, default 24)
+    audio_sample_rate (INT, default 32000)
+  Outputs:
+    frames (IMAGE), audio (AUDIO), metadata (METADATA)
+
+H3ContextIR:
+  Inputs:
+    prompt (STRING, multiline)
+    duration (INT): 4-15
+    aspect_ratio (ENUM)
+    api_token (STRING, optional)
+    region (ENUM): global | cn
+  Outputs:
+    enhanced_prompt (STRING), raw_response (STRING)
+
+H3Regenerate2K:
+  Inputs:
+    video_frames (IMAGE)
+    original_prompt (STRING)
+    duration (INT), aspect_ratio (ENUM)
+    api_token (STRING, optional)
+    region (ENUM)
+    audio (AUDIO, optional)
+  Outputs:
+    upscaled_frames (IMAGE), upscaled_audio (AUDIO), status (STRING)

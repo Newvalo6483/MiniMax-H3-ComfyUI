@@ -1,0 +1,81 @@
+{
+    "api": {
+        "global_base": "https://api.minimax.io",
+        "cn_base": "https://api.minimaxi.com",
+        "token_env_var": "MINIMAX_API_KEY",
+        "endpoints": {
+            "create": "/video-generation-v2-create",
+            "context_ir": "/video-generation-v2-h3-context-ir",
+            "regenerate_2k": "/video-generation-v2-regeneration"
+        }
+    },
+    "model": {
+        "hf_repo": "MiniMaxAI/MiniMax-H3",
+        "local_path": "./models/MiniMax-H3",
+        "variants": {
+            "fl2va": {
+                "checkpoint": "FL2VA",
+                "tasks": ["t2va", "fl2va"],
+                "description": "Text/First-Last-Frame to Video+Audio"
+            },
+            "ref2va": {
+                "checkpoint": "Ref2VA",
+                "tasks": ["ref2va"],
+                "description": "Reference to Video+Audio (multi-modal inputs)"
+            }
+        },
+        "precision": "bf16",
+        "architecture": "H3-Omni-Transformer",
+        "parameters": "33B",
+        "encoder": "Qwen3-VL-32B (layer 50)",
+        "visual_vae": "f16t4d24",
+        "audio_vae": "32kHz stereo, 40Hz latent"
+    },
+    "generation_defaults": {
+        "duration_seconds": 10,
+        "aspect_ratio": "16:9",
+        "fps": 24,
+        "guidance_scale": 5.0,
+        "num_inference_steps": 50,
+        "seed": 42,
+        "audio_sample_rate": 32000,
+        "audio_channels": 2
+    },
+    "sglang": {
+        "host": "0.0.0.0",
+        "fl2va_port": 30010,
+        "ref2va_port": 30011,
+        "num_gpus": 4,
+        "ulysses_degree": 4,
+        "performance_mode": "speed"
+    },
+    "comfyui": {
+        "required_version": "0.31.0",
+        "nodes_category": "MiniMax H3",
+        "custom_nodes_path": "custom_nodes/minimax_h3/"
+    },
+    "output": {
+        "resolution_768p": {
+            "shorter_side": 768,
+            "description": "Native H3-Base output resolution"
+        },
+        "resolution_2k": {
+            "method": "H3-Regenerate-2K API",
+            "description": "In-context regeneration using H3 base model"
+        }
+    },
+    "supported_languages": [
+        "Arabic", "Chinese", "English", "French", "German",
+        "Italian", "Japanese", "Korean", "Portuguese", "Russian", "Spanish"
+    ],
+    "limits": {
+        "min_duration_seconds": 4,
+        "max_duration_seconds": 15,
+        "max_ref_images": 9,
+        "max_ref_videos": 3,
+        "max_ref_audio": 3,
+        "max_ref_files_total": 12,
+        "ref_video_min_duration": 2,
+        "ref_video_max_duration": 15
+    }
+}

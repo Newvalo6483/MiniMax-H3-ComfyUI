@@ -1,0 +1,106 @@
+{
+    "last_node_id": 8,
+    "last_link_id": 10,
+    "nodes": [
+        {
+            "id": 1,
+            "type": "H3ModelLoader",
+            "pos": [100, 100],
+            "outputs": [
+                {"name": "model", "type": "H3_MODEL", "links": [1]},
+                {"name": "vae", "type": "H3_VAE", "links": [6]},
+                {"name": "processor", "type": "H3_PROCESSOR", "links": null}
+            ],
+            "widgets_values": ["MiniMaxAI/MiniMax-H3", "ref2va", "bf16", "cuda", "full", false]
+        },
+        {
+            "id": 2,
+            "type": "LoadImageBatch",
+            "pos": [100, 350],
+            "outputs": [{"name": "IMAGE", "type": "IMAGE", "links": [2]}],
+            "widgets_values": ["reference_images/", 9]
+        },
+        {
+            "id": 3,
+            "type": "LoadVideo",
+            "pos": [100, 500],
+            "outputs": [{"name": "VIDEO", "type": "VIDEO", "links": [3]}],
+            "widgets_values": ["reference_video.mp4"]
+        },
+        {
+            "id": 4,
+            "type": "LoadAudio",
+            "pos": [100, 650],
+            "outputs": [{"name": "AUDIO", "type": "AUDIO", "links": [4]}],
+            "widgets_values": ["voice_reference.wav"]
+        },
+        {
+            "id": 5,
+            "type": "H3ReferenceToVideo",
+            "pos": [500, 100],
+            "size": [400, 350],
+            "inputs": [
+                {"name": "model", "type": "H3_MODEL", "link": 1},
+                {"name": "vae", "type": "H3_VAE", "link": null},
+                {"name": "processor", "type": "H3_PROCESSOR", "link": null},
+                {"name": "ref_images", "type": "IMAGE", "link": 2},
+                {"name": "ref_videos", "type": "VIDEO", "link": 3},
+                {"name": "ref_audio", "type": "AUDIO", "link": 4}
+            ],
+            "outputs": [
+                {"name": "video_latent", "type": "H3_LATENT", "links": [5]},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "links": [7]}
+            ],
+            "widgets_values": [
+                "subject_definitions: <Subject 1> is the person in <Image 1>. summary: Animate <Subject 1> speaking with the voice timbre from <Audio 1>. The background from <Video 1> is partially preserved. detailed_description: [Shot 1] The subject turns to camera and begins speaking, their mouth movements synchronized to the new dialogue. The voice references the calm male timbre of <Audio 2>. overall_soundscape: Ambient background from <Video 1> continues beneath the new dialogue. non_diegetic_music: None.",
+                5.0,
+                5.0,
+                50,
+                42
+            ]
+        },
+        {
+            "id": 6,
+            "type": "H3VAEDecode",
+            "pos": [980, 100],
+            "inputs": [
+                {"name": "vae", "type": "H3_VAE", "link": 6},
+                {"name": "video_latent", "type": "H3_LATENT", "link": 5},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "link": 7}
+            ],
+            "outputs": [
+                {"name": "frames", "type": "IMAGE", "links": [8]},
+                {"name": "audio", "type": "AUDIO", "links": [9]},
+                {"name": "metadata", "type": "METADATA", "links": [10]}
+            ],
+            "widgets_values": [true, 24, 32000]
+        },
+        {
+            "id": 7,
+            "type": "SaveAnimatedWEBP",
+            "pos": [1360, 100],
+            "inputs": [{"name": "images", "type": "IMAGE", "link": 8}],
+            "widgets_values": ["minimax_h3_r2v_output"]
+        },
+        {
+            "id": 8,
+            "type": "SaveAudio",
+            "pos": [1360, 250],
+            "inputs": [{"name": "audio", "type": "AUDIO", "link": 9}],
+            "widgets_values": ["minimax_h3_r2v_audio"]
+        }
+    ],
+    "links": [
+        [1, 1, 0, 5, 0, "H3_MODEL"],
+        [2, 2, 0, 5, 3, "IMAGE"],
+        [3, 3, 0, 5, 4, "VIDEO"],
+        [4, 4, 0, 5, 5, "AUDIO"],
+        [5, 5, 0, 6, 1, "H3_LATENT"],
+        [6, 1, 1, 6, 0, "H3_VAE"],
+        [7, 5, 1, 6, 2, "AUDIO_LATENT"],
+        [8, 6, 0, 7, 0, "IMAGE"],
+        [9, 6, 1, 8, 0, "AUDIO"],
+        [10, 6, 2, null, null, "METADATA"]
+    ],
+    "version": 0.4
+}

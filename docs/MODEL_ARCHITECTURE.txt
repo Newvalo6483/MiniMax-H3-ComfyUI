@@ -1,0 +1,102 @@
+MiniMax H3 - Model Architecture Reference
+===========================================
+Model: MiniMaxAI/MiniMax-H3
+Parameters: 33B
+Architecture: H3-Omni-Transformer (dense, single-stream)
+License: MiniMax H3 Community License Agreement
+
+SYSTEM OVERVIEW
+MiniMax H3 is a general-purpose, omni-modal generative system. It supports
+unified understanding of multimodal contexts composed of text, images,
+video, and audio, and generates video with native stereo audio at
+resolutions up to 2K and durations up to 15 seconds.
+
+The complete H3 system consists of three modules:
+
+1. H3-Context-IR (API only)
+   - Preprocessing and orchestration system for free-form multimodal inputs
+   - Interprets relationships among text, images, audio, and reference videos
+   - Serializes understanding into Context Intermediate Representation
+   - Internal workflow: instruction parsing, cross-modal association,
+     temporal understanding, complex logical reasoning
+   - NOT open-sourced (relies on multi-stage workflow with multiple models)
+   - API available: /video-generation-v2-h3-context-ir
+
+2. H3-Base (Open Source)
+   - Generates audio and video based on H3-Context-IR output
+   - Produces 768p resolution output
+   - Two variants: FL2VA and Ref2VA
+
+3. H3-Regenerate-2K (API only)
+   - Feeds 768p result + original context back into H3
+   - Regenerates output at 2K resolution using in-context learning
+   - NOT open-sourced
+   - API available: /video-generation-v2-regeneration
+
+H3-BASE ARCHITECTURE
+
+H3-Encoder:
+   - Based on Qwen3-VL-32B (full pretrained weights)
+   - Provides hidden states from layer 50 to H3-Omni-Transformer
+   - Added special tokens (e.g., <d>) to tokenizer
+   - Encodes text and visual inputs
+
+H3-VisualVAE (f16t4d24):
+   - Temporally causal video autoencoder
+   - Spatial compression: 16x
+   - Temporal compression: 4x
+   - 24 latent channels
+   - Latents further patchified: 1x2x2 (time, height, width)
+   - Effective spatial downsampling: 32x
+   - Temporal downsampling: 4x
+   - ViT-based decoder for reduced decoding cost
+   - Latent space optimized for reconstruction quality and learnability
+
+H3-AudioVAE:
+   - Stereo audio autoencoder
+   - Processes left and right channels independently
+   - 32 kHz audio compressed to 40 Hz latent tokens
+   - Inspired by VA-VAE
+   - Optimized latent space for reconstruction + generation quality
+
+H3-Omni-Transformer:
+   - 33B parameter dense, single-stream Transformer
+   - ~13B parameters in AdaLN-related branches
+   - AdaLN modulation outputs can be precomputed and cached for inference
+   - No modality-specific structures in attention or FFN layers
+   - Modality-specific parameters confined to input/output layers + AdaLN
+   - Three-dimensional Multimodal Rotary Position Embeddings (MM-RoPE)
+     for (t, h, w) positional relationships
+   - Native sparse attention support (not in initial open-source release)
+   - Jointly predicts video and audio latents
+
+GENERATION PIPELINE
+1. Input text → H3-Encoder → hidden states (layer 50)
+2. Visual inputs → H3-Encoder + H3-VisualVAE → visual latents
+3. Audio inputs → H3-AudioVAE → audio latents
+4. All tokens organized into unified packed multimodal sequence
+5. MM-RoPE applied for spatial/temporal relationships
+6. H3-Omni-Transformer processes sequence
+7. Predicts video latents → H3-VisualVAE decoder → video frames
+8. Predicts audio latents → H3-AudioVAE decoder → stereo audio
+
+OUTPUT SPECIFICATIONS
+- Duration: 4-15 seconds
+- Aspect ratios: 21:9, 16:9, 4:3, 1:1, 3:4, 9:16
+- Resolution: 768p (shorter side = 768px), 2K via Regenerate-2K
+- Frame rate: 24 FPS
+- Audio: 32 kHz stereo
+- Languages: 11 stable (Arabic, Chinese, English, French, German, Italian,
+  Japanese, Korean, Portuguese, Russian, Spanish)
+
+INFERENCE FRAMEWORKS
+- SGLang: Multi-GPU serving, Ulysses parallelism
+- vLLM: High-throughput serving
+- diffusers: Python pipeline for research/prototyping
+- ComfyUI: Node-based visual interface (this repository)
+
+CONTACT
+- Model: model@minimax.io
+- API (Global): platform.minimax.io
+- API (CN): platform.minimaxi.com
+- WebApp: hailuoai.video (Global) / hailuoai.com (CN)

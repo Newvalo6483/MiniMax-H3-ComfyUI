@@ -1,0 +1,96 @@
+MiniMax H3 - Prompting Guide
+==============================
+For best results with MiniMax H3 video generation, structure your prompts
+using the official format. H3-Context-IR (or your own preprocessing system)
+expects prompts with specific sections.
+
+PROMPT STRUCTURE
+
+A well-structured MiniMax H3 prompt contains three sections:
+
+1. integrated_multimodal_description
+   - Shot-by-shot description of the video
+   - Camera movements, angles, transitions
+   - Character descriptions (appearance, clothing, actions)
+   - Environment details (lighting, atmosphere, objects)
+   - Temporal markers (e.g., "At 00:04.500, the camera cuts to...")
+
+2. overall_soundscape
+   - Diegetic sounds: wind, footsteps, engine noise, ambient room tone
+   - Physical sounds: clinking, rustling, impact, creaking
+   - Audio dynamics: crescendo, fade, sudden silence
+
+3. non_diegetic_music
+   - Genre and instrumentation
+   - Tempo and mood
+   - Dynamic changes (swelling, peaking, cutting to silence)
+
+FORMAT EXAMPLE:
+
+  [Shot 1] Cinematic, medium wide shot, pushing in slowly.
+  In the cavernous bridge of a starship, sleek metallic consoles
+  glow with amber displays. A female captain stands in the center.
+  She wears a dark navy military tunic with silver insignias.
+  Her back is to the camera, silhouetted against starlight.
+  Outside the window, an armada of dreadnoughts hovers in formation.
+  The fleet's thrusters begin to glow with intense blue light.
+
+  [Shot 2] At 00:04.500, the camera cuts to a close-up of the
+  captain's face. The blue-white light from the fleet reflects in
+  her eyes. A blinding white flash floods through the window as the
+  fleet jumps to hyperspace.
+
+  overall_soundscape: A low resonant hum of the ship's systems,
+  escalating electronic whine as the fleet charges. A massive
+  deafening boom during the flash, metallic creaking of the bridge.
+  Then abrupt silence, only the faint hum of the isolated bridge.
+
+  non_diegetic_music: Cinematic space-opera orchestral score,
+  slow tempo, mournful French horn over sustained string dissonances,
+  building to a massive peak before snapping into silence.
+
+REFERENCE-TO-VIDEO PROMPT FORMAT
+
+For Ref2VA, use a structured format:
+
+  subject_definitions:
+  <Subject 1> is [description from reference image].
+  <Video 1> is the source video for the editing task.
+  <Audio 1> is [description of audio reference].
+
+  summary:
+  [Task type] The target video [description of what should happen].
+
+  retention_analysis:
+  <Subject 1>: fully_preserved - [what to keep]
+  <Video 1>: partially_copy - [what to reuse]
+
+  detailed_description:
+  [Full scene description with dialogue using <d> tags]
+  <Subject 1> (S1) speaks, <d>[English] Follow the wind, live free.</d>
+
+  overall_soundscape: [audio description]
+  non_diegetic_music: [music description]
+
+TIPS FOR BETTER RESULTS
+
+1. BE SPECIFIC: "warm golden hour lighting" not "nice lighting"
+2. USE TEMPORAL MARKERS: "At 3.2 seconds, the camera begins to pan"
+3. DESCRIBE THE SOUNDSCAPE: H3 generates audio natively, so describe it
+4. MENTION CAMERA MOVEMENT: "slowly pushing in", "static shot", "tracking"
+5. INCLUDE CLOTHING DETAILS: "dark navy tunic with silver chest insignias"
+6. SPECIFY EMOTIONS: "her jaw clenches", "a relaxed peaceful smile"
+7. USE SHOT NUMBERS: [Shot 1], [Shot 2] for multi-shot sequences
+8. DESCRIBE TRANSITIONS: "the camera cuts to", "dissolves into"
+
+LANGUAGE SUPPORT
+H3 stably supports 11 languages. Use the <d>[Language] text</d> format
+for spoken dialogue:
+  <d>[English] Follow the wind, live free.</d>
+  <d>[Chinese] 随风而行，自由自在。</d>
+  <d>[Japanese] 風に従い、自由に生きよう。</d>
+
+ADDITIONAL RESOURCES
+- Official prompt writing guide: VIDEO_PROMPT_WRITING_GUIDE_base_en.md
+- Reference mode guide: VIDEO_PROMPT_WRITING_GUIDE_ref_en.md
+- Skills to improve prompts: github.com/MiniMax-AI/MiniMax-H3/tree/main/skills

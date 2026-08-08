@@ -1,0 +1,125 @@
+{
+    "last_node_id": 6,
+    "last_link_id": 6,
+    "nodes": [
+        {
+            "id": 1,
+            "type": "H3ModelLoader",
+            "pos": [100, 100],
+            "size": [320, 200],
+            "flags": {},
+            "order": 0,
+            "mode": 0,
+            "outputs": [
+                {"name": "model", "type": "H3_MODEL", "links": [1], "slot_index": 0},
+                {"name": "vae", "type": "H3_VAE", "links": [4], "slot_index": 1},
+                {"name": "processor", "type": "H3_PROCESSOR", "links": null, "slot_index": 2}
+            ],
+            "properties": {},
+            "widgets_values": [
+                "MiniMaxAI/MiniMax-H3",
+                "fl2va",
+                "bf16",
+                "cuda",
+                "full",
+                false
+            ]
+        },
+        {
+            "id": 2,
+            "type": "H3TextToVideo",
+            "pos": [500, 100],
+            "size": [400, 300],
+            "flags": {},
+            "order": 1,
+            "mode": 0,
+            "inputs": [
+                {"name": "model", "type": "H3_MODEL", "link": 1},
+                {"name": "vae", "type": "H3_VAE", "link": null},
+                {"name": "processor", "type": "H3_PROCESSOR", "link": null}
+            ],
+            "outputs": [
+                {"name": "video_latent", "type": "H3_LATENT", "links": [2], "slot_index": 0},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "links": [5], "slot_index": 1}
+            ],
+            "properties": {},
+            "widgets_values": [
+                "[Shot 1] Cinematic wide shot. A lone astronaut stands on the surface of Mars, the red dust swirling around their boots. The sun sets on the horizon casting long shadows. The camera slowly pushes in. overall_soundscape: Wind howling across the Martian plains, dust particles hitting the visor, distant rumble. non_diegetic_music: Sweeping orchestral strings building slowly.",
+                10.0,
+                "16:9",
+                5.0,
+                50,
+                42
+            ]
+        },
+        {
+            "id": 3,
+            "type": "H3VAEDecode",
+            "pos": [980, 100],
+            "size": [300, 200],
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "inputs": [
+                {"name": "vae", "type": "H3_VAE", "link": 4},
+                {"name": "video_latent", "type": "H3_LATENT", "link": 2},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "link": 5}
+            ],
+            "outputs": [
+                {"name": "frames", "type": "IMAGE", "links": [3], "slot_index": 0},
+                {"name": "audio", "type": "AUDIO", "links": [6], "slot_index": 1},
+                {"name": "metadata", "type": "METADATA", "links": null}
+            ],
+            "properties": {},
+            "widgets_values": [
+                true,
+                24,
+                32000
+            ]
+        },
+        {
+            "id": 4,
+            "type": "SaveAnimatedWEBP",
+            "pos": [1360, 100],
+            "size": [300, 100],
+            "flags": {},
+            "order": 3,
+            "mode": 0,
+            "inputs": [
+                {"name": "images", "type": "IMAGE", "link": 3}
+            ],
+            "properties": {},
+            "widgets_values": [
+                "minimax_h3_t2v_output"
+            ]
+        },
+        {
+            "id": 5,
+            "type": "SaveAudio",
+            "pos": [1360, 250],
+            "size": [300, 100],
+            "flags": {},
+            "order": 4,
+            "mode": 0,
+            "inputs": [
+                {"name": "audio", "type": "AUDIO", "link": 6}
+            ],
+            "properties": {},
+            "widgets_values": [
+                "minimax_h3_t2v_audio"
+            ]
+        }
+    ],
+    "links": [
+        [1, 1, 0, 2, 0, "H3_MODEL"],
+        [2, 2, 0, 3, 1, "H3_LATENT"],
+        [3, 3, 0, 4, 0, "IMAGE"],
+        [4, 1, 1, 3, 0, "H3_VAE"],
+        [5, 2, 1, 3, 2, "AUDIO_LATENT"],
+        [6, 3, 1, 5, 0, "AUDIO"]
+    ],
+    "groups": [],
+    "config": {},
+    "extra": {},
+    "version": 0.4
+}

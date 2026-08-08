@@ -1,0 +1,86 @@
+MiniMax H3 ComfyUI - Installation Guide
+=========================================
+Version: 1.0.0
+ComfyUI Required: v0.31.0 (August 8, 2026)
+Model: MiniMaxAI/MiniMax-H3 (33B parameters)
+
+PREREQUISITES
+- Python 3.10+
+- PyTorch 2.1+ with CUDA 12.0+
+- ComfyUI v0.31.0 or later
+- 4x NVIDIA GPU (80GB VRAM each recommended)
+- 200GB+ free disk space for model weights
+
+STEP 1: INSTALL COMFYUI
+If you don't have ComfyUI yet:
+    git clone https://github.com/comfyanonymous/ComfyUI
+    cd ComfyUI
+    pip install -r requirements.txt
+
+If you already have ComfyUI, update to v0.31.0:
+    git pull origin master
+    pip install -r requirements.txt --upgrade
+
+STEP 2: DOWNLOAD THE MODEL
+Install huggingface-cli:
+    pip install huggingface_hub[cli]
+
+Download MiniMax H3 (FL2VA variant, ~80GB):
+    hf download MiniMaxAI/MiniMax-H3 \
+        --include "model_index.json" "FL2VA/*" \
+        --local-dir /path/to/models/MiniMax-H3
+
+Or download both variants (~160GB):
+    hf download MiniMaxAI/MiniMax-H3 \
+        --include "model_index.json" "FL2VA/*" "Ref2VA/*" \
+        --local-dir /path/to/models/MiniMax-H3
+
+Alternatively, use the provided script:
+    python scripts/download_model.py --variant fl2va \
+        --output /path/to/models/MiniMax-H3
+
+STEP 3: INSTALL CUSTOM NODES
+Copy the nodes/ directory from this repository into ComfyUI:
+    cp -r nodes/ /path/to/ComfyUI/custom_nodes/minimax_h3/
+
+Or clone this repository directly:
+    cd /path/to/ComfyUI/custom_nodes/
+    git clone https://github.com/minimaxh3comfyui/minimax-h3-comfyui minimax_h3
+
+STEP 4: INSTALL PYTHON DEPENDENCIES
+    pip install torch torchvision diffusers transformers accelerate
+    pip install safetensors sentencepiece
+    pip install requests pillow scipy
+
+STEP 5: CONFIGURE COMFYUI
+1. Launch ComfyUI:
+       python main.py
+2. Open http://127.0.0.1:8188 in your browser
+3. Load a workflow from workflows/ (drag JSON into the interface)
+4. In the H3ModelLoader node, set model_path to your MiniMax-H3 directory
+
+STEP 6: GENERATE VIDEO
+1. Enter your text prompt in the H3TextToVideo node
+2. Set duration (4-15s), aspect ratio, guidance scale
+3. Click "Queue Prompt"
+4. Wait for generation (typically 2-10 minutes depending on GPU)
+
+OPTIONAL: SGLANG DEPLOYMENT
+For faster inference with multiple GPUs, deploy SGLang:
+    pip install sglang[all]
+    python scripts/sglang_serve.py --variant fl2va --port 30010
+
+Then configure the H3ModelLoader node to use the SGLang endpoint.
+
+OPTIONAL: 2K RESOLUTION
+For 2K output, you need a MiniMax API key:
+1. Get an API key from platform.minimax.io
+2. Set environment variable: export MINIMAX_API_KEY=your_key
+3. Use the t2v_2k_workflow.json workflow
+
+TROUBLESHOOTING
+- Out of memory: Use offload="full" in H3ModelLoader, or use int8 VAE
+- Model not found: Verify model_path points to the MiniMax-H3 directory
+- Audio not generating: Ensure decode_audio is True in H3VAEDecode
+- Slow generation: Use SGLang deployment, increase num_gpus
+- CUDA error: Update to latest PyTorch and NVIDIA drivers

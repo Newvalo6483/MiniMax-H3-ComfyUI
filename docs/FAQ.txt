@@ -1,0 +1,91 @@
+MiniMax H3 ComfyUI - FAQ
+=========================
+
+Q: How to install MiniMax H3 in ComfyUI?
+A: 1. Install ComfyUI v0.31.0 or later
+   2. Download MiniMax H3 from HuggingFace (MiniMaxAI/MiniMax-H3)
+   3. Copy the nodes/ directory from this repo into ComfyUI/custom_nodes/
+   4. Set model_path in H3ModelLoader to your MiniMax-H3 directory
+   5. Load a workflow JSON and queue generation
+
+Q: What GPU do I need for MiniMax H3?
+A: MiniMax H3 is a 33B parameter model. For comfortable inference at 768p,
+   you need approximately 4x 80GB GPUs (A100 or H100). With int8_convrot VAE
+   and full CPU offload, requirements can be reduced. For the full 2K workflow
+   (which uses the API for 2K upscaling), you only need enough VRAM for 768p
+   generation locally.
+
+Q: Can I generate 2K video locally?
+A: The 2K output uses H3-Regenerate-2K, which is currently API-only. You can
+   generate 768p video locally with H3-Base and then call the H3-Regenerate-2K
+   API for 2K upscaling. The full 2K workflow script is in scripts/api_2k_workflow.py.
+
+Q: Does MiniMax H3 generate audio?
+A: Yes. MiniMax H3 natively generates synchronized stereo audio at 32 kHz
+   alongside the video. The H3-AudioVAE compresses 32 kHz audio into latent
+   tokens at 40 Hz. Audio is decoded automatically when using the H3VAEDecode
+   node with decode_audio=True.
+
+Q: What languages does MiniMax H3 support?
+A: MiniMax H3 stably supports 11 languages: Arabic, Chinese, English, French,
+   German, Italian, Japanese, Korean, Portuguese, Russian, and Spanish.
+   Additional languages are supported to varying degrees. Use the
+   <d>[Language] text</d> format for spoken dialogue in prompts.
+
+Q: What is H3-Context-IR?
+A: H3-Context-IR is a preprocessing system that interprets relationships among
+   text, images, audio, and reference videos, converting them into a structured
+   Context Intermediate Representation for H3-Base generation. It is API-only
+   (not open-sourced) but you can follow the Prompting Guide to build your own
+   context-processing system or use the provided prompt format directly.
+
+Q: Can I fine-tune MiniMax H3?
+A: The complete model weights are released under the MiniMax H3 Community
+   License Agreement, including AdaLN-related parameters (~13B). Fine-tuning
+   is technically possible but requires significant compute (at least 8x H100).
+   The model uses MM-RoPE and modality-specific AdaLN, which require careful
+   handling during training.
+
+Q: How long does generation take?
+A: At 768p with 50 inference steps on 4x H100:
+   - 5 second video: ~2-3 minutes
+   - 10 second video: ~5-8 minutes
+   - 15 second video: ~10-15 minutes
+   With SGLang deployment, generation is faster due to optimized batching.
+
+Q: What inference frameworks are supported?
+A: SGLang (recommended for multi-GPU), vLLM (high throughput), diffusers
+   (Python pipeline), and ComfyUI (node-based visual interface). SGLang is
+   recommended for production deployments with 4+ GPUs.
+
+Q: What is the difference between FL2VA and Ref2VA?
+A: FL2VA (First-Last-frame-to-Video-Audio) supports text, one image (first or
+   last frame), or two images (first and last frame) as input. Ref2VA
+   (Reference-to-Video-Audio) supports multi-modal references: up to 9 images,
+   3 videos, and 3 audio clips. Use FL2VA for text-to-video and simple
+   image-to-video. Use Ref2VA for complex reference-based generation.
+
+Q: Why is my video missing audio?
+A: Make sure decode_audio is True in the H3VAEDecode node. If using a custom
+   workflow, ensure the audio_latent output from H3TextToVideo/H3ImageToVideo
+   is connected to the audio_latent input of H3VAEDecode. ComfyUI v0.31.0
+   includes fixes for H3 audio VAE sampling and EasyCache corruption.
+
+Q: How do I reduce VRAM usage?
+A: 1. Set offload to "full" in H3ModelLoader (sequential CPU offload)
+   2. Enable use_int8_vae for reduced VAE memory (by kijai)
+   3. Reduce num_inference_steps
+   4. Reduce video duration
+   5. Use SGLang deployment which handles memory more efficiently
+
+Q: Is MiniMax H3 free to use?
+A: The model weights are released under the MiniMax H3 Community License
+   Agreement. Commercial use may require a license (see Q&A about the License
+   on HuggingFace). The API (platform.minimax.io) has usage-based pricing.
+   Running locally is free for non-commercial use.
+
+Q: How do I contact MiniMax?
+A: Email: model@minimax.io
+   API (Global): platform.minimax.io
+   API (CN): platform.minimaxi.com
+   WebApp: hailuoai.video (Global) / hailuoai.com (CN)
