@@ -4,9 +4,18 @@ MiniMax H3 ComfyUI - FAQ
 Q: How to install MiniMax H3 in ComfyUI?
 A: 1. Install ComfyUI v0.31.0 or later
    2. Download MiniMax H3 from HuggingFace (MiniMaxAI/MiniMax-H3)
-   3. Copy the nodes/ directory from this repo into ComfyUI/custom_nodes/
-   4. Set model_path in H3ModelLoader to your MiniMax-H3 directory
-   5. Load a workflow JSON and queue generation
+   3. Optionally download the Turbo LoRA (MiniMaxAI/MiniMax-H3-Turbo-Lora)
+   4. Copy the nodes/ directory from this repo into ComfyUI/custom_nodes/
+   5. Set model_path in H3ModelLoader to your MiniMax-H3 directory
+   6. For fast generation, add an H3TurboLoraLoader node and reduce steps to 10
+   7. Load a workflow JSON and queue generation
+
+Q: What is the MiniMax H3 Turbo LoRA?
+A: The MiniMax H3 Turbo LoRA (MiniMaxAI/MiniMax-H3-Turbo-Lora) is a low-rank
+   adaptation that distills the video generation process into fewer steps.
+   With the turbo lora at full strength (1.0), you can reduce steps from 50
+   to 10-15, achieving 3-4x faster generation. At 0.7 strength, you get 2x
+   speedup with near-full quality. Available on HuggingFace and GitHub.
 
 Q: What GPU do I need for MiniMax H3?
 A: MiniMax H3 is a 33B parameter model. For comfortable inference at 768p,

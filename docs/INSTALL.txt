@@ -1,8 +1,9 @@
-MiniMax H3 ComfyUI - Installation Guide
-=========================================
+MiniMax H3 ComfyUI - Installation Guide (with Turbo LoRA)
+==========================================================
 Version: 1.0.0
 ComfyUI Required: v0.31.0 (August 8, 2026)
 Model: MiniMaxAI/MiniMax-H3 (33B parameters)
+Turbo LoRA: MiniMaxAI/MiniMax-H3-Turbo-Lora
 
 PREREQUISITES
 - Python 3.10+
@@ -21,7 +22,7 @@ If you already have ComfyUI, update to v0.31.0:
     git pull origin master
     pip install -r requirements.txt --upgrade
 
-STEP 2: DOWNLOAD THE MODEL
+STEP 2: DOWNLOAD THE MODEL AND TURBO LORA
 Install huggingface-cli:
     pip install huggingface_hub[cli]
 
@@ -38,6 +39,10 @@ Or download both variants (~160GB):
 Alternatively, use the provided script:
     python scripts/download_model.py --variant fl2va \
         --output /path/to/models/MiniMax-H3
+
+Download the Turbo LoRA (~500MB, optional but recommended for 3-4x speedup):
+    hf download MiniMaxAI/MiniMax-H3-Turbo-Lora \
+        --local-dir /path/to/models/MiniMax-H3-Turbo-Lora
 
 STEP 3: INSTALL CUSTOM NODES
 Copy the nodes/ directory from this repository into ComfyUI:

@@ -1,0 +1,157 @@
+{
+    "last_node_id": 8,
+    "last_link_id": 9,
+    "nodes": [
+        {
+            "id": 1,
+            "type": "H3ModelLoader",
+            "pos": [100, 100],
+            "size": [320, 200],
+            "flags": {},
+            "order": 0,
+            "mode": 0,
+            "outputs": [
+                {"name": "model", "type": "H3_MODEL", "links": [1], "slot_index": 0},
+                {"name": "vae", "type": "H3_VAE", "links": [5], "slot_index": 1},
+                {"name": "processor", "type": "H3_PROCESSOR", "links": null, "slot_index": 2}
+            ],
+            "properties": {},
+            "widgets_values": [
+                "MiniMaxAI/MiniMax-H3",
+                "fl2va",
+                "bf16",
+                "cuda",
+                "full",
+                false
+            ]
+        },
+        {
+            "id": 2,
+            "type": "LoraLoaderForH3",
+            "pos": [480, 100],
+            "size": [280, 120],
+            "flags": {},
+            "order": 1,
+            "mode": 0,
+            "inputs": [
+                {"name": "model", "type": "H3_MODEL", "link": 1}
+            ],
+            "outputs": [
+                {"name": "model", "type": "H3_MODEL", "links": [2], "slot_index": 0}
+            ],
+            "properties": {},
+            "widgets_values": [
+                "MiniMax-H3-Turbo-Lora",
+                1.0,
+                "MiniMaxAI/MiniMax-H3-Turbo-Lora"
+            ],
+            "title": "H3 Turbo LoRA Loader"
+        },
+        {
+            "id": 3,
+            "type": "H3TextToVideo",
+            "pos": [820, 100],
+            "size": [400, 300],
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "inputs": [
+                {"name": "model", "type": "H3_MODEL", "link": 2},
+                {"name": "vae", "type": "H3_VAE", "link": null},
+                {"name": "processor", "type": "H3_PROCESSOR", "link": null}
+            ],
+            "outputs": [
+                {"name": "video_latent", "type": "H3_LATENT", "links": [3], "slot_index": 0},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "links": [6], "slot_index": 1}
+            ],
+            "properties": {},
+            "widgets_values": [
+                "[Shot 1] Cinematic wide shot of a futuristic city at sunset. Neon signs flicker to life as the camera slowly pans across towering skyscrapers. Flying cars streak between buildings leaving light trails. overall_soundscape: Hum of flying vehicles, distant city ambience, wind at altitude. non_diegetic_music: Upbeat synthwave with punchy bass and retro arpeggios.",
+                8.0,
+                "16:9",
+                5.0,
+                10,
+                42
+            ],
+            "title": "H3 Text-to-Video (Turbo: 10 steps)"
+        },
+        {
+            "id": 4,
+            "type": "H3VAEDecode",
+            "pos": [1280, 100],
+            "size": [300, 200],
+            "flags": {},
+            "order": 3,
+            "mode": 0,
+            "inputs": [
+                {"name": "vae", "type": "H3_VAE", "link": 5},
+                {"name": "video_latent", "type": "H3_LATENT", "link": 3},
+                {"name": "audio_latent", "type": "AUDIO_LATENT", "link": 6}
+            ],
+            "outputs": [
+                {"name": "frames", "type": "IMAGE", "links": [4], "slot_index": 0},
+                {"name": "audio", "type": "AUDIO", "links": [7], "slot_index": 1},
+                {"name": "metadata", "type": "METADATA", "links": null}
+            ],
+            "properties": {},
+            "widgets_values": [
+                true,
+                24,
+                32000
+            ]
+        },
+        {
+            "id": 5,
+            "type": "SaveAnimatedWEBP",
+            "pos": [1640, 100],
+            "size": [280, 100],
+            "flags": {},
+            "order": 4,
+            "mode": 0,
+            "inputs": [
+                {"name": "images", "type": "IMAGE", "link": 4}
+            ],
+            "properties": {},
+            "widgets_values": [
+                "minimax_h3_turbo_output"
+            ]
+        },
+        {
+            "id": 6,
+            "type": "SaveAudio",
+            "pos": [1640, 250],
+            "size": [280, 100],
+            "flags": {},
+            "order": 5,
+            "mode": 0,
+            "inputs": [
+                {"name": "audio", "type": "AUDIO", "link": 7}
+            ],
+            "properties": {},
+            "widgets_values": [
+                "minimax_h3_turbo_audio"
+            ]
+        }
+    ],
+    "links": [
+        [1, 1, 0, 2, 0, "H3_MODEL"],
+        [2, 2, 0, 3, 0, "H3_MODEL"],
+        [3, 3, 0, 4, 1, "H3_LATENT"],
+        [4, 4, 0, 5, 0, "IMAGE"],
+        [5, 1, 1, 4, 0, "H3_VAE"],
+        [6, 3, 1, 4, 2, "AUDIO_LATENT"],
+        [7, 4, 1, 6, 0, "AUDIO"]
+    ],
+    "groups": [
+        {
+            "title": "Turbo LoRA Mode (10 steps, ~3-4x faster)",
+            "bounding": [80, 50, 1560, 420],
+            "color": "#3f789e"
+        }
+    ],
+    "config": {},
+    "extra": {
+        "info": "Turbo LoRA workflow: H3 Model → Turbo LoRA Loader → T2V (10 steps) → VAE Decode → Save"
+    },
+    "version": 0.4
+}
