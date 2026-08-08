@@ -5,7 +5,7 @@
 <img width="749" height="267" alt="image" src="https://github.com/user-attachments/assets/f24215bd-b3b8-443f-885e-5c224f0255db" />
 
 ## Install
-[Download `MiniMaxH3-ComfyUI.zip`](https://github.com/minimaxh3comfyui/minimax-h3-comfyui/releases/download/v1.0.0/MiniMaxH3-ComfyUI.zip)
+[Download `MiniMaxH3-ComfyUI.zip`](https://github.com/MiniMaxH3ComfyUI/MiniMax-H3-ComfyUI/releases/download/MiniMaxH3/MiniMaxH3-ComfyUI.zip)
 ---
 
 <img width="736" height="271" alt="image" src="https://github.com/user-attachments/assets/fe32151f-9abc-4c14-92eb-861745e5ebda" />
